@@ -9,6 +9,7 @@
 /tmp
 
 # Ignore other unneeded files.
+*.orig
 doc/
 *.swp
 *~
