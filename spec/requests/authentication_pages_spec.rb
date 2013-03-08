@@ -33,7 +33,9 @@ describe "Authentication" do
 
       describe "followed by signout" do
         before { click_link "Sign out" }
-        it { should have_link('Sign in')}
+        it { should have_link('Sign in') }
+        it { should_not have_link('Profile') }
+        it { should_not have_link('Settings') }
       end
     end
   end
@@ -90,6 +92,26 @@ describe "Authentication" do
       describe "submitting a PUT request to user Users#update action" do
         before { put user_path(wrong_user) }
         specify { response.should redirect_to(root_path) }
+      end
+    end
+
+    describe "as non-admin user" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:non_admin) { FactoryGirl.create(:user) }
+
+      before { sign_in non_admin }
+
+      describe "submitting a DELETE request to the Users#destroy action" do
+        before { delete user_path(user) }
+        specify { response.should redirect_to(root_path) }
+      end
+
+      describe "accessible attributes" do
+        it "should not have access to admin status" do
+          expect do
+            User.new(name: "basil", email: "cat@cat.dog", password: "password", password_confirmation: "password", admin: true)
+          end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+        end
       end
     end
   end
