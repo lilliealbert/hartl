@@ -55,7 +55,7 @@ describe User do
 		end
 	end
 
-	describe "when  email format is valid" do
+	describe "when email format is valid" do
 		it "should be valid" do
 			addresses = %w[dog@dog.COM a_US-er@f.b.org frst.lst@foo.jp a+b@baz.cn]
 			addresses.each do |valid_address|

@@ -92,7 +92,7 @@ describe "User pages" do
         fill_in "Name",         with: "Cat Cat"
         fill_in "Email",        with: "cat@cat.cat"
         fill_in "Password",     with: "password"
-        fill_in "Confirmation", with: "password"
+        fill_in "Confirm Password", with: "password"
       end
 
       it "should create a user" do
@@ -109,6 +109,16 @@ describe "User pages" do
         it { should have_link('Sign out')}
       end 
     end
+  end
+
+  describe "sign in" do
+    let(:user) { FactoryGirl.create(:user) }
+    before { sign_in user }
+
+    it { save_and_open_page }
+
+    it { should have_content('This is the home page') }
+    it { should_not have_selector("h1", text: user.name)}
   end
 
   describe "edit" do

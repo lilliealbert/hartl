@@ -81,7 +81,7 @@ describe "Authentication" do
     
     describe "as wrong user" do
       let(:user) { FactoryGirl.create(:user) }
-      let(:wrong_user) { FactoryGirl.create(:user, email: "wrong@example.com") }
+      let(:wrong_user) { FactoryGirl.create(:user, email: "wronger@example.com") }
       before { sign_in user }
 
       describe "visiting Users#edit page" do
@@ -92,6 +92,21 @@ describe "Authentication" do
       describe "submitting a PUT request to user Users#update action" do
         before { put user_path(wrong_user) }
         specify { response.should redirect_to(root_path) }
+      end
+    end
+
+    describe "as a signed-in user" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { sign_in user }
+
+      describe "submit a POST request to Users#create action" do
+        before { post users_path }
+        it { response.should redirect_to(root_path) }
+      end
+
+      describe "submit a GET request to Users#new action" do
+        before { get new_user_path }
+        it { response.should redirect_to(root_path) }
       end
     end
 
@@ -112,6 +127,17 @@ describe "Authentication" do
             User.new(name: "basil", email: "cat@cat.dog", password: "password", password_confirmation: "password", admin: true)
           end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
         end
+      end
+    end
+
+    describe "as an admin user" do
+      let(:admin) { FactoryGirl.create(:admin) }
+
+      before { sign_in admin }
+
+      describe "submitting a DELETE request to the Users#destroy action" do
+        before { delete user_path(admin) }
+        specify { response.should redirect_to(users_path) }
       end
     end
   end
