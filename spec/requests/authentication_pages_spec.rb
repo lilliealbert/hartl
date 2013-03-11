@@ -136,8 +136,10 @@ describe "Authentication" do
       before { sign_in admin }
 
       describe "submitting a DELETE request to the Users#destroy action" do
-        before { delete user_path(admin) }
-        specify { response.should redirect_to(users_path) }
+        it "should not change the User count" do
+          expect{ delete user_path(admin) }.to change(User, :count).by(0)
+        end
+        # it { should have_content("Welcome") }
       end
     end
   end
